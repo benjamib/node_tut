@@ -7,6 +7,8 @@ module.exports = http.createServer((req,res) => {
 
 	if(reqUrl.pathname == '/sample' && req.method === 'GET'){
 		service.sampleRequest(req,res);
+	} else if(reqUrl.pathname== '/address' && req.method === 'GET'){
+	  service.getRepsForAddress(req,res);
 	} else if(reqUrl.pathname == '/test' && req.method === 'POST'){
 		service.testRequest(req,res);
 	} else if(req.method === 'GET'){
@@ -19,4 +21,4 @@ module.exports = http.createServer((req,res) => {
 
 function logRequest(req,reqUrl){
 	console.log('Request Type: ' + req.method + ' EndPoint: ' + reqUrl.pathname);
-};
+}
