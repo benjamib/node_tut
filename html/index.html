@@ -13,7 +13,6 @@
   </head>
 
   <body>
-    <!--h1>Candidate Info</h1-->
     <div class="topnav">
     <a class="active" href="#home">Home</a>
     <a href="#about">About</a>
@@ -25,17 +24,8 @@
       </form>
     </div>
   </div>
-    <!--form>
-      <label for="candidate-choose">Choose a candidate</label>
-      <select id="candidate-choose" name="candidate-choose">
-        <option>Select...</option>
-        <option>Candidate 1</option>
-        <option>Candidate 2</option>
-        <option>Candidate 3</option>
-        <option>Candidate 4</option>
-      </select>
-    </form-->
-	<div id="candidate">
+    
+	<div id="candidate" class="row">
     </div>
     
 
@@ -45,19 +35,27 @@
 	    var searchText = document.querySelector('#search-field');
 
 	  userChoice.onclick = function() {
-	  	var verse = searchText.value;
-	  	updateDisplay(verse);
+	  	var searchVal = searchText.value;
+	  	updateDisplay(searchVal);
       };
-      function updateDisplay(verse){
-        verse = verse.replace(" ", "");
-		verse = verse.toLowerCase();
-		var url = verse + '.html';
+      function updateDisplay(searchVal){
+        searchVal = searchVal.replace(" ", "");
+		    searchVal = searchVal.toLowerCase();
+		    var url = '/address?zipCode=' + searchVal;
         fetch(url).then(function(response) {
-			response.text().then(function(text) {
-    			poemDisplay.innerHTML = text;
-  			});
-		});
+			    response.text().then(function(text) {
+			    var data = JSON.parse(text);
+			    poemDisplay.innerHTML = "";
+			    data.officials.forEach(myFunc)
+  			  });
+		    });
       };
+      function myFunc(item,index,arr){
+        var photo = './img_avatar.png';
+        if(arr[index].photoUrl)
+          photo = arr[index].photoUrl;
+        poemDisplay.innerHTML += '<div class="column"><div class="candidate-display"><img src='+ photo +'><div id="candidate_1" class="container"><h3>'+arr[index].name +'</h3></div></div></div>';
+      }
     </script>
   </body>
 </html>

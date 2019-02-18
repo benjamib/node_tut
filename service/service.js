@@ -1,6 +1,7 @@
 const url= require("url");
 const fs = require("fs");
 const path = require("path");
+const fetch = require("node-fetch");
 
 exports.sampleRequest = function (req,res) {
 	const reqUrl = url.parse(req.url,true);
@@ -30,6 +31,7 @@ exports.testRequest = function (req,res) {
 		};
 		res.statusCode =200;
 		res.setHeader('Content-Type','application/json');
+		
 		res.end(JSON.stringify(response));
 
 	});
@@ -51,13 +53,20 @@ exports.getRepsForAddress = function (req,res) {
   if(validateZip(zip) !== null) {
     res.statusCode = 200;
 	  res.setHeader('Content-Type','application/json');
-	  var response = { "zipcode" : + reqUrl.query.zipCode};
-	  res.end(JSON.stringify(response));
+	  var googleAPI = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyCJdaQdBk-uyo3wdI1VijH7Pgvyg0uAhjc&address="+zip;
+	  fetchURL(googleAPI,res);
   } else {
     this.invalidRequest(req,res);
   }
   
 };
+function fetchURL(url,res){
+  fetch(url).then(function(response) {
+    response.text().then(function(text) {
+      res.end(text);
+    });
+	});
+}
 
 exports.serveFile = function (req,res){
 	var filepath = "html/" + req.url;
@@ -83,12 +92,9 @@ exports.serveFile = function (req,res){
 		'.svg':'application/image/svg+xml'
 
 	};
-	console.log(extname);
 	contentType = mimeTypes[extname];
-	console.log(contentType);
 	if(contentType == null)
 	{
-	  console.log("here");
 		res.writeHead(204);
 		res.end();
 	}

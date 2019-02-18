@@ -1,13 +1,28 @@
 img{
   width:100%;
 }
+.column{
+  width:275px;
+  margin:auto;
+}
+/*.row:after{
+  content: "";
+  display: table;
+  clear: both;
+}*/
+.row{
+  display:flex;
+  flex-direction:row;
+  flex-wrap:wrap;
+  
+}
 .blue{
   color: blue;
 }
 .candidate-display{
   margin: 10px auto;
   transition: .3s;
-  width:200px;
+  width:250px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,.2);
 }
 .candidate-display:hover{
