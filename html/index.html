@@ -4,60 +4,28 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <title>Ajax starting point</title>
 
-    <style>
-      img{
-        width:100%;
-      }
-      html, pre {
-        font-family: sans-serif;
-      }
-      body {
-        width: 700px;
-        margin: 0 auto;
-        background-color: #FFF;
-      }
-      div {
-        line-height: 1.5;
-        letter-spacing: 0.05rem;
-        padding: 1rem;
-        background-color: white;
-      }
-      label {
-        width: 200px;
-        margin-right: 33px;
-      }
-      select {
-        width: 350px;
-        padding: 5px;
-      }
-      .blue{
-        color: blue;
-      }
-      .candidate-display{
-        margin: 10px auto;
-        transition: .3s;
-        width:200px;
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,.2);
-      }
-      .candidate-display:hover{
-        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-      }
-      .container{
-        padding: 2px 16px;
-      }
-    </style>
-    <!--[if lt IE 9]>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
-    <![endif]-->
+
   </head>
 
   <body>
-    <h1>Candidate Info</h1>
-
-    <form>
+    <!--h1>Candidate Info</h1-->
+    <div class="topnav">
+    <a class="active" href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <div class="search-container">
+      <form action="/">
+        <input id = "search-field" type="text" placeholder="Search.." name="search">
+        <button id="search-button" type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
+  </div>
+    <!--form>
       <label for="candidate-choose">Choose a candidate</label>
       <select id="candidate-choose" name="candidate-choose">
         <option>Select...</option>
@@ -66,17 +34,18 @@
         <option>Candidate 3</option>
         <option>Candidate 4</option>
       </select>
-    </form>
+    </form-->
 	<div id="candidate">
     </div>
     
 
     <script>
-      var userChoice = document.querySelector('select');
-	  var poemDisplay = document.querySelector('#candidate');
+      var userChoice = document.querySelector('#search-button');
+	    var poemDisplay = document.querySelector('#candidate');
+	    var searchText = document.querySelector('#search-field');
 
-	  userChoice.onchange = function() {
-	  	var verse = userChoice.value;
+	  userChoice.onclick = function() {
+	  	var verse = searchText.value;
 	  	updateDisplay(verse);
       };
       function updateDisplay(verse){
