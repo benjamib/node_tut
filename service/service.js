@@ -53,7 +53,8 @@ exports.getRepsForAddress = function (req,res) {
   if(validateZip(zip) !== null) {
     res.statusCode = 200;
 	  res.setHeader('Content-Type','application/json');
-	  var googleAPI = "https://www.googleapis.com/civicinfo/v2/representatives?key=AIzaSyCJdaQdBk-uyo3wdI1VijH7Pgvyg0uAhjc&address="+zip;
+	  var KEY = process.env.GOOGLE_API_KEY;
+	  var googleAPI = "https://www.googleapis.com/civicinfo/v2/representatives?key="+KEY+"&address="+zip;
 	  fetchURL(googleAPI,res);
   } else {
     this.invalidRequest(req,res);
