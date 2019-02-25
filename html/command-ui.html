@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--script src="data.js" ></script-->
+    <script src="command-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="command-ui.css">
+</head>
+<body class="crt">
+    <!--div>Typewriter</div-->
+    <p class ="error">ERROR...</p>
+    <textarea class="output crt" id="demo">_</textarea>
+    <div class="console" id="console">
+  <div class="command-input crt"><br/>
+    <div class="line"><span data-auth="data-auth">root@SAM </span></div>
+    <div class="line"><span>$</span>&nbsp;
+      <input id="command-line" class="command crt" data-input="data-input" onkeydown="processInput()"/>
+    </div>
+  </div>
+</div>
+</body>
+</html>

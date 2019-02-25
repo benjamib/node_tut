@@ -1,7 +1,8 @@
 const url= require("url");
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
+
+const dt = require("../html/data");
 
 exports.sampleRequest = function (req,res) {
 	const reqUrl = url.parse(req.url,true);
@@ -17,6 +18,103 @@ exports.sampleRequest = function (req,res) {
 	res.end(JSON.stringify(response));
 };
 
+exports.look = function (req,res){
+  const reqUrl = url.parse(req.url,true);
+	var param = "around";
+  if(reqUrl.query.param !== 'undefined'){
+		param = reqUrl.query.param;
+	}
+	var response = handleLook(param);
+	sendResponse(res,response);
+	
+};
+function handleLook(direction)
+{
+  if(direction === "around"){
+    return dt.CurrentLocation().look;
+  }
+  else if(direction === "north"){
+    return dt.CurrentLocation().lookNorth();
+  }
+  else if(direction === "south"){
+    return dt.CurrentLocation().lookSouth();
+  }
+  else if(direction == "east"){
+    return dt.CurrentLocation().lookEast();
+  }
+  else if(direction === "west"){
+    return dt.CurrentLocation().lookWest();
+  }
+  else{
+    return "I do not know how to look at " + direction;
+  }
+}
+exports.move = function (req,res){
+  const reqUrl = url.parse(req.url,true);
+  if(reqUrl.query.param === 'undefined'){
+		sendResponse(res,"Need to specify the direction you want to move (North/South/East/West)");
+		return;
+	}
+	param = reqUrl.query.param;
+	var response = handleMove(param);
+	sendResponse(res,response);
+};
+function handleMove(direction){
+  if(direction === "north"){
+    return dt.MoveNorth();
+  }
+  else if(direction === "south"){
+    return dt.MoveSouth();
+  }
+  else if(direction == "east"){
+    return dt.MoveEast();
+  }
+  else if(direction === "west"){
+    return dt.MoveWest();
+  }
+  else{
+    return "I do not know how to move " + param;
+  }
+}
+exports.read = function(req,res){
+  const reqUrl = url.parse(req.url,true);
+  if(reqUrl.query.param === 'undefined'){
+		sendResponse(res,"Need to specify a log number");
+		return;
+	}
+	param = reqUrl.query.param;
+	var response = dt.ReadLog(param);
+  sendResponse(res,response);
+};
+exports.where = function(req,res){
+  var response = dt.GetLocation();
+  sendResponse(res,response);
+};
+exports.whoami = function(req,res){
+  var response = dt.GetWhoami();
+  sendResponse(res,response);
+};
+exports.SAM = function(req,res){
+  var response = dt.GetAboutSAM();
+  sendResponse(res,response);
+};
+exports.help = function(req,res){
+  var response = dt.GetHelp();
+  sendResponse(res,response);
+};
+exports.ship = function(req,res){
+  var response = dt.GetShip();
+  sendResponse(res,response);
+};
+exports.log = function(req,res){
+  var response = dt.DisplayLogs();
+  sendResponse(res,response);
+};
+function sendResponse(res,response){
+  res.statusCode = 200;
+	res.setHeader('Content-Type','application/text');
+	res.end(JSON.stringify(response));
+}
 exports.testRequest = function (req,res) {
 	body = '';
 
@@ -32,7 +130,7 @@ exports.testRequest = function (req,res) {
 		res.statusCode =200;
 		res.setHeader('Content-Type','application/json');
 		
-		res.end(JSON.stringify(response));
+		res.end(response);
 
 	});
 };
@@ -44,35 +142,10 @@ exports.invalidRequest = function (req, res) {
 	res.end("Invalid Request");
 };
 
-exports.getRepsForAddress = function (req,res) {
-  
-  
-  const reqUrl = url.parse(req.url,true);
-  var zip = reqUrl.query.zipCode;
-  
-  if(validateZip(zip) !== null) {
-    res.statusCode = 200;
-	  res.setHeader('Content-Type','application/json');
-	  var KEY = process.env.GOOGLE_API_KEY;
-	  var googleAPI = "https://www.googleapis.com/civicinfo/v2/representatives?key="+KEY+"&address="+zip;
-	  fetchURL(googleAPI,res);
-  } else {
-    this.invalidRequest(req,res);
-  }
-  
-};
-function fetchURL(url,res){
-  fetch(url).then(function(response) {
-    response.text().then(function(text) {
-      res.end(text);
-    });
-	});
-}
-
 exports.serveFile = function (req,res){
 	var filepath = "html/" + req.url;
 	if(req.url=="/") {
-		filepath = "html/index.html";
+		filepath = "html/command-ui.html";
 	}
 	
 	var extname = String(path.extname(filepath)).toLowerCase();
@@ -96,8 +169,7 @@ exports.serveFile = function (req,res){
 	contentType = mimeTypes[extname];
 	if(contentType == null)
 	{
-		res.writeHead(204);
-		res.end();
+		sendResponse(res,"I do not understand that command...");
 	}
 	else {
 	  fs.readFile(filepath, function(err,content){
@@ -120,8 +192,3 @@ exports.serveFile = function (req,res){
 	});
 	}
 };
-
-function validateZip(zip){
-  var zipRegex = /^\d{5}$/g;
-  return zip.match(zipRegex);
-}
